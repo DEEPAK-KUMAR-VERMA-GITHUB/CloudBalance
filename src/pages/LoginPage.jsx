@@ -11,6 +11,8 @@ import {
 } from "../utils/validation";
 import toast from "react-hot-toast";
 import { login } from "../apis/auth";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -21,6 +23,9 @@ const LoginPage = () => {
     general: "",
   });
   const [loading, setLoading] = useState(false);
+  const { login:authLogin } = useAuth();
+  
+  const navigate = useNavigate();
 
   const handleInputChange = (setter, key) => (e) => {
     const sanitized = sanitizeInput(e.target.value);
@@ -57,7 +62,14 @@ const LoginPage = () => {
     try {
       await login(email, password);
       toast.success("Login successful!");
+      authLogin({
+        name: "Deepak",
+        email,
+        role: "Admin",
+        isAuthenticated: true,
+      });
       // Redirect or perform further actions upon successful login
+      navigate("/dashboard");
     } catch (err) {
       console.error(err);
       setErrors((prevErrors) => ({
