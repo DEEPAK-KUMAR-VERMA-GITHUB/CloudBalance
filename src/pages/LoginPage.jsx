@@ -1,6 +1,6 @@
 import { useState } from "react";
 import FormContainer from "../components/form/FormContainer";
-import CloudkeeperLogo from "./../assets/cloudkeeper-logo.png";
+import CloudkeeperLogo from "./../assets/images/cloudkeeper-logo.png";
 import InputField from "../components/form/InputField";
 import ErrorMessage from "../components/form/ErrorMessage";
 import Button from "../components/form/Button";
@@ -23,8 +23,8 @@ const LoginPage = () => {
     general: "",
   });
   const [loading, setLoading] = useState(false);
-  const { login:authLogin } = useAuth();
-  
+  const { login: authLogin } = useAuth();
+
   const navigate = useNavigate();
 
   const handleInputChange = (setter, key) => (e) => {
@@ -63,7 +63,7 @@ const LoginPage = () => {
       await login(email, password);
       toast.success("Login successful!");
       authLogin({
-        name: "Deepak",
+        name: "Deepak Kumar Verma",
         email,
         role: "Admin",
         isAuthenticated: true,

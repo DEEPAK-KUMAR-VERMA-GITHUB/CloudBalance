@@ -1,24 +1,63 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useAuth } from "../../contexts/AuthContext";
+import userAvatarImage from "../../assets/images/avatar.png";
+import { Icon, LogOut } from "lucide-react";
 
-const Navbar = ({ user }) => {
-  const {logout} = useAuth();
+const Navbar = ({ user, toggleSidebar, setHeaderHeight }) => {
+  const { logout } = useAuth();
+
+  const headerRef = useRef(null);
+
+  useEffect(() => {
+    if (headerRef.current) {
+      setHeaderHeight(headerRef.current.offsetHeight);
+    }
+
+    return () => setHeaderHeight(0);
+  }, [setHeaderHeight]);
+
   return (
-    <header className="w-full bg-gray-800 text-white flex items-center justify-between px-6 py-3 sticky top-0 z-50">
-      {/* branding */}
-      <div className="text-xl font-semibold tracking-wide">CloudBalance</div>
+    <header
+      ref={headerRef}
+      className="w-full bg-white flex items-center justify-between px-6 py-3 sticky top-0 z-50"
+    >
+      <div className="flex items-center">
+        {/* branding */}
+        <div className="text-xl font-semibold tracking-wide">CloudBalance</div>
+        {/* sidebar toggler */}
+        <button
+          onClick={toggleSidebar}
+          aria-label="Toggle menu"
+          className="m-2 text-gray-700 cursor-pointer"
+        >
+          ☰
+        </button>
+      </div>
 
       {/* user info and logout */}
       <div className="flex items-center space-x-4">
-        <span className="text-sm font-medium" aria-label="Current User">
-          {user.name}
-        </span>
+        <div className="w-8 rounded-full overflow-hidden ring ring-blue-700 shadow cursor-pointer ">
+          <img
+            src={userAvatarImage}
+            alt="avatar image"
+            className="object-cover"
+          />
+        </div>
+
+        <div>
+          <p className="text-xs" >Welcome</p>
+          <p className="text-sm font-medium text-blue-800 " aria-label="Current User">
+            {user.name}
+          </p>
+        </div>
+
         <button
           onClick={logout}
           aria-label="Logout"
           type="button"
-          className="bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-1 px-3 py-1 rounded text-sm transition-colors duration-200"
+          className="flex items-center gap-1 p-2 border border-blue-800 rounded text-blue-800 hover:bg-blue-100 transition-colors  cursor-pointer "
         >
+          <LogOut />
           Logout
         </button>
       </div>
