@@ -1,7 +1,8 @@
+import { LogOut } from "lucide-react";
 import React, { useEffect, useRef } from "react";
-import { useAuth } from "../../contexts/AuthContext";
 import userAvatarImage from "../../assets/images/avatar.png";
-import { Icon, LogOut } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
+import { capitalize } from "../../utils/helper";
 
 const Navbar = ({ user, toggleSidebar, setHeaderHeight }) => {
   const { logout } = useAuth();
@@ -45,9 +46,12 @@ const Navbar = ({ user, toggleSidebar, setHeaderHeight }) => {
         </div>
 
         <div>
-          <p className="text-xs" >Welcome</p>
-          <p className="text-sm font-medium text-blue-800 " aria-label="Current User">
-            {user.name}
+          <p className="text-xs">Welcome</p>
+          <p
+            className="text-sm font-medium text-blue-800 "
+            aria-label="Current User"
+          >
+            {capitalize(user.name)}
           </p>
         </div>
 

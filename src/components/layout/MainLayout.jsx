@@ -3,6 +3,8 @@ import { Outlet } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import Breadcrumbs from "./Breadcrumbs";
+import Footer from "./Footer";
 
 const MainLayout = ({ user }) => {
   const { logout } = useAuth();
@@ -42,11 +44,17 @@ const MainLayout = ({ user }) => {
         <main
           className={`${
             isCollapsed ? "ml-15" : "ml-50"
-          } flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-400`}
+          } flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-400 relative`}
           role="main"
           tabIndex={-1}
         >
+          <Breadcrumbs />
           <Outlet />
+
+          <Footer
+            leftText={`CloudKeeper ${new Date().getFullYear()} | All Rights Reserved `}
+            rightText={"Contact Us"}
+          />
         </main>
       </div>
     </div>

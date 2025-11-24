@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import { login } from "../apis/auth";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Footer from "../components/layout/Footer";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -122,6 +123,8 @@ const LoginPage = () => {
           />
         </FormContainer>
       </form>
+
+      <Footer leftText={"Have Questions ? Talk to our Team"} rightText={`CloudKeeper ${new Date().getFullYear()} | All Rights Reserved `} />
     </div>
   );
 };

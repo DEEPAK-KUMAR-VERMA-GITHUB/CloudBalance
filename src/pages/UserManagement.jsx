@@ -1,5 +1,8 @@
+import { Info, Pencil } from "lucide-react";
 import { populateUsers } from "../apis/usersData";
 import Table from "../components/table/Table";
+import Switch from "../components/Switch";
+import { useId, useState } from "react";
 
 const userColumns = [
   { key: "firstName", label: "First Name", sortable: true, filterable: true },
@@ -11,7 +14,7 @@ const userColumns = [
     sortable: false,
     filterable: true,
     render: (roles) => (
-      <div className="flex flex-wrap gap-1">
+      <div className="flex gap-1">
         {roles.map((r, idx) => (
           <span
             key={r || idx}
@@ -30,7 +33,10 @@ const userColumns = [
     sortable: false,
     filterable: false,
     render: (_, row) => (
-      <div className="flex gap-1">
+      <div className="flex gap-6 items-center">
+        <Switch key={row} />
+        <Pencil size={20} color="blue" />
+
         <button className="bg-blue-600 text-white rounded px-2 py-0.5 text-xs">
           Promote
         </button>
@@ -41,13 +47,33 @@ const userColumns = [
     ),
   },
 ];
-
 const UserManagement = () => {
-
   const userData = populateUsers();
+  const [twoFactorAuthEnable, setTwoFactorAuthEnable] = useState(false);
+
+  const switchKey = useId();
 
   return (
-    <Table columns={userColumns} data={userData} pageSize={10} />
+    <>
+      <header className="flex items-center justify-between">
+        <h1 className=" text-2xl font-semibold my-1 ">Users</h1>
+        <div className="flex items-center gap-1">
+          <p className="flex items-center gap-1 text-gray-600">
+            Two-factor Authentication{" "}
+            <span className="">
+              <Info size={15} color="blue" />{" "}
+            </span>{" "}
+          </p>
+          <Switch
+            key={switchKey}
+            checked={twoFactorAuthEnable}
+            onChange={() => setTwoFactorAuthEnable((prev) => !prev)}
+          />
+        </div>
+      </header>
+
+      <Table columns={userColumns} data={userData} pageSize={10} />
+    </>
   );
 };
 
