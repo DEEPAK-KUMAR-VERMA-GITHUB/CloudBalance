@@ -1,8 +1,11 @@
 import { Info, Pencil } from "lucide-react";
-import { populateUsers } from "../apis/usersData";
-import Table from "../components/table/Table";
+import { useEffect, useId, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { dummyUsers } from "../apis/usersData";
+import Divider from "../components/Divider";
+import Button from "../components/form/Button";
 import Switch from "../components/Switch";
-import { useId, useState } from "react";
+import Table from "../components/table/Table";
 
 const userColumns = [
   { key: "firstName", label: "First Name", sortable: true, filterable: true },
@@ -48,10 +51,19 @@ const userColumns = [
   },
 ];
 const UserManagement = () => {
-  const userData = populateUsers();
+  const [usersData, setUsersData] = useState(dummyUsers);
   const [twoFactorAuthEnable, setTwoFactorAuthEnable] = useState(false);
 
   const switchKey = useId();
+  const navigate = useNavigate();
+
+  const handleAddUser = () => {
+    navigate("add-user");
+  };
+
+  useEffect(() => {
+    setUsersData(dummyUsers);
+  }, [usersData]);
 
   return (
     <>
@@ -71,8 +83,15 @@ const UserManagement = () => {
           />
         </div>
       </header>
+      <Divider />
 
-      <Table columns={userColumns} data={userData} pageSize={10} />
+      <Button
+        label={"+ Add New User"}
+        className={"max-w-fit cursor-pointer my-2"}
+        onClick={handleAddUser}
+      />
+
+      <Table columns={userColumns} data={usersData} pageSize={10} />
     </>
   );
 };

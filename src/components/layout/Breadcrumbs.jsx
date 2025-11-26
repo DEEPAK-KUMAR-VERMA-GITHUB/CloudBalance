@@ -6,7 +6,6 @@ import { capitalize } from "../../utils/helper";
 export default function Breadcrumbs() {
   const location = useLocation();
 
-  console.log(location)
 
   // Split URL into usable segments
   const pathSegments = useMemo(() => {
@@ -50,7 +49,12 @@ export default function Breadcrumbs() {
             {index === breadcrumbs.length - 1 ? (
               <span>{crumb.label}</span>
             ) : (
-              <Link to={crumb.path}>{crumb.label}</Link>
+              <Link
+                to={crumb.path}
+                className="font-semibold text-blue-800 hover:underline"
+              >
+                {crumb.label}
+              </Link>
             )}
           </li>
         ))}
