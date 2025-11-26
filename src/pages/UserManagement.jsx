@@ -74,24 +74,32 @@ const UserManagement = () => {
         filterable: true,
       },
       {
-        key: "actions",
-        label: "Actions",
+        key: "action",
+        label: "Action",
         sortable: false,
         filterable: false,
         render: (_, row) => (
-          <div className="flex gap-6 items-center">
-            <Switch key={row.id} />
+          <div className="flex items-center gap-2 min-w-[260px]">
+            <Switch key={`switch-${row.id}`} />
             <Pencil
               size={20}
               onClick={() => navigate(`edit-user/${row.id}`, { state: row })}
               className="cursor-pointer text-blue-300 hover:text-blue-700 transition"
             />
-            <button className="bg-blue-600 text-white rounded px-2 py-0.5 text-xs">
-              Promote
-            </button>
-            <button className="bg-gray-200 text-gray-800 rounded px-2 py-0.5 text-xs border border-gray-300">
-              Resend Link
-            </button>
+            {row.canPromote ? (
+              <button className="cursor-pointer bg-blue-400 hover:bg-blue-600 text-white rounded px-2 py-0.5 text-xs w-16">
+                Promote
+              </button>
+            ) : (
+              <span className="w-16 inline-block" aria-hidden="true" />
+            )}
+            {row.canResend ? (
+              <button className="cursor-pointer bg-gray-200 hover:bg-gray-300 text-gray-800 rounded px-2 py-0.5 text-xs border border-gray-300 w-16">
+                Resend
+              </button>
+            ) : (
+              <span className="w-16 inline-block" aria-hidden="true" />
+            )}
           </div>
         ),
       },

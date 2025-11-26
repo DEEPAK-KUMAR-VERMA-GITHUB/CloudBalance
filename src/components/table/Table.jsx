@@ -77,7 +77,7 @@ const Table = ({
   }, [processedData, currentPage, pageSize]);
 
   return (
-    <div >
+    <div>
       <div className="flex items-center mb-4 space-x-2">
         <input
           className="w-64 px-3 py-2 border border-gray-300 rounded shadow-sm focus:border-blue-400 focus:ring"
@@ -100,15 +100,15 @@ const Table = ({
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="py-2 px-4 text-left font-medium select-none"
+                  className="py-4 px-4 text-left font-medium select-none"
                 >
                   <div
-                    className="flex items-center space-x-1 cursor-pointer"
+                    className={`flex items-center justify-between ${col.sortable ? "cursor-pointer" : ""}`}
                     onClick={() => col.sortable && handleSort(col.key)}
                   >
                     <span>{col.label}</span>
                     {col.sortable && sortKey === col.key && (
-                      <span>{sortOrder === "asc" ? "▲" : "▼"}</span>
+                      <span className="text-slate-400" >{sortOrder === "asc" ? "▲" : "▼"}</span>
                     )}
                   </div>
 
@@ -166,7 +166,7 @@ const Table = ({
         <div className="flex justify-end items-center mt-3 space-x-2">
           <button
             disabled={currentPage === 1}
-            className="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
+            className="px-2 py-1 bg-gray-200 rounded cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
             onClick={() => setCurrentPage((page) => Math.max(page - 1, 1))}
           >
             Prev
@@ -175,7 +175,7 @@ const Table = ({
           {[...Array(totalPages)].map((_, idx) => (
             <button
               key={idx}
-              className={`px-2 py-1 rounded ${
+              className={`px-2 py-1 rounded cursor-pointer ${
                 currentPage === idx + 1
                   ? "bg-blue-600 text-white "
                   : "bg-gray-200"
@@ -189,7 +189,7 @@ const Table = ({
 
           <button
             disabled={currentPage === totalPages}
-            className="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
+            className="px-2 py-1 bg-gray-200 rounded cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
             onClick={() =>
               setCurrentPage((page) => Math.min(page + 1, totalPages))
             }
