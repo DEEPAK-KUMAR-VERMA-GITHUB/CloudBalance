@@ -1,80 +1,114 @@
 import { Info, Pencil } from "lucide-react";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { dummyUsers } from "../apis/usersData";
-import Divider from "../components/Divider";
-import Button from "../components/form/Button";
-import Switch from "../components/Switch";
-import Table from "../components/table/Table";
+import { apiGetUsers } from "../apis/services/userServices";
+import { Divider, Loader, Switch } from "../components";
+import { Button } from "../components/form";
+import { Table } from "../components/table";
 
-const userColumns = [
-  { key: "firstName", label: "First Name", sortable: true, filterable: true },
-  { key: "lastName", label: "Last Name", sortable: true, filterable: true },
-  { key: "email", label: "Email", sortable: true, filterable: true },
-  {
-    key: "roles",
-    label: "Roles",
-    sortable: false,
-    filterable: true,
-    render: (roles) => (
-      <div className="flex gap-1">
-        {roles.map((r, idx) => (
-          <span
-            key={r || idx}
-            className="bg-blue-100 text-blue-700 rounded px-2 py-0.5 text-xs mx-0.5"
-          >
-            {r}
-          </span>
-        ))}
-      </div>
-    ),
-  },
-  { key: "lastLogin", label: "Last Login", sortable: true, filterable: true },
-  {
-    key: "actions",
-    label: "Actions",
-    sortable: false,
-    filterable: false,
-    render: (_, row) => (
-      <div className="flex gap-6 items-center">
-        <Switch key={row} />
-        <Pencil size={20} color="blue" />
-
-        <button className="bg-blue-600 text-white rounded px-2 py-0.5 text-xs">
-          Promote
-        </button>
-        <button className="bg-gray-200 text-gray-800 rounded px-2 py-0.5 text-xs border border-gray-300">
-          Resend Link
-        </button>
-      </div>
-    ),
-  },
-];
 const UserManagement = () => {
-  const [usersData, setUsersData] = useState(dummyUsers);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const [twoFactorAuthEnable, setTwoFactorAuthEnable] = useState(false);
 
   const switchKey = useId();
   const navigate = useNavigate();
 
-  const handleAddUser = () => {
+  const handleAddUserClick = () => {
     navigate("add-user");
   };
 
   useEffect(() => {
-    setUsersData(dummyUsers);
-  }, [usersData]);
+    let isMounted = true;
+
+    setLoading(true);
+
+    apiGetUsers()
+      .then((data) => {
+        if (isMounted) {
+          setUsers(data);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (isMounted) setLoading(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const columns = useMemo(
+    () => [
+      {
+        key: "firstName",
+        label: "First Name",
+        sortable: true,
+        filterable: true,
+      },
+      { key: "lastName", label: "Last Name", sortable: true, filterable: true },
+      { key: "email", label: "Email", sortable: true, filterable: true },
+      {
+        key: "roles",
+        label: "Roles",
+        sortable: false,
+        filterable: true,
+        render: (roles) => (
+          <div className="flex gap-1">
+            {roles.map((role, idx) => (
+              <span
+                key={role || idx}
+                className="bg-blue-100 text-blue-700 rounded px-2 py-0.5 text-xs mx-0.5"
+              >
+                {role}
+              </span>
+            ))}
+          </div>
+        ),
+      },
+      {
+        key: "lastLogin",
+        label: "Last Login",
+        sortable: true,
+        filterable: true,
+      },
+      {
+        key: "actions",
+        label: "Actions",
+        sortable: false,
+        filterable: false,
+        render: (_, row) => (
+          <div className="flex gap-6 items-center">
+            <Switch key={row.id} />
+            <Pencil
+              size={20}
+              onClick={() => navigate(`edit-user/${row.id}`, { state: row })}
+              className="cursor-pointer text-blue-300 hover:text-blue-700 transition"
+            />
+            <button className="bg-blue-600 text-white rounded px-2 py-0.5 text-xs">
+              Promote
+            </button>
+            <button className="bg-gray-200 text-gray-800 rounded px-2 py-0.5 text-xs border border-gray-300">
+              Resend Link
+            </button>
+          </div>
+        ),
+      },
+    ],
+    [navigate]
+  );
 
   return (
     <>
       <header className="flex items-center justify-between">
-        <h1 className=" text-2xl font-semibold my-1 ">Users</h1>
+        <h1 className="text-2xl font-semibold my-1">Users</h1>
         <div className="flex items-center gap-1">
           <p className="flex items-center gap-1 text-gray-600">
-            Two-factor Authentication{" "}
-            <span className="">
-              <Info size={15} color="blue" />{" "}
-            </span>{" "}
+            Two-factor Authentication
+            <span>
+              <Info size={15} color="blue" />
+            </span>
           </p>
           <Switch
             key={switchKey}
@@ -88,10 +122,14 @@ const UserManagement = () => {
       <Button
         label={"+ Add New User"}
         className={"max-w-fit cursor-pointer my-2"}
-        onClick={handleAddUser}
+        onClick={handleAddUserClick}
       />
 
-      <Table columns={userColumns} data={usersData} pageSize={10} />
+      {loading ? (
+        <Loader />
+      ) : (
+        <Table columns={columns} data={users} pageSize={10} />
+      )}
     </>
   );
 };

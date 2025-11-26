@@ -2,15 +2,18 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./contexts/AuthContext";
-import AddNewUser from "./pages/AddNewUser";
-import AwsServices from "./pages/AwsServices";
-import CostExplorer from "./pages/CostExplorer";
-import Dashboard from "./pages/Dahboard";
-import LoginPage from "./pages/LoginPage";
-import Onboarding from "./pages/Onboarding";
-import UserManagement from "./pages/UserManagement";
 import { UserRoles } from "./apis/usersData";
-import Unauthorized from "./pages/Unauthorized";
+import {
+  AwsServices,
+  CostExplorer,
+  Dashboard,
+  LoginPage,
+  Onboarding,
+  UserManagement,
+  Unauthorized,
+  EditUser,
+  AddNewUser,
+} from "./pages";
 
 function App() {
   const { user } = useAuth();
@@ -44,6 +47,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/user-management" element={<UserManagement />} />
           <Route path="/user-management/add-user" element={<AddNewUser />} />
+          <Route path="/user-management/edit-user/:id" element={<EditUser />} />
           <Route path="/onboarding" element={<Onboarding />} />
         </Route>
       </Route>
