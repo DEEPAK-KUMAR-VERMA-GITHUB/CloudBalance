@@ -1,45 +1,23 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
 import Breadcrumbs from "./Breadcrumbs";
 import Footer from "./Footer";
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
 
-const MainLayout = ({ user }) => {
-  const { logout } = useAuth();
-
+const MainLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [headerHeight, setHeaderHeight] = useState(0);
-  const [sidebarWidth, setSidebarWidth] = useState(0);
 
-  const toggleSidebar = useCallback(() => {
-    setIsCollapsed((prev) => !prev);
-    if (isCollapsed) {
-      setSidebarWidth(256);
-    } else {
-      setSidebarWidth(50);
-    }
-  }, [isCollapsed, setSidebarWidth]);
+  const toggleSidebar = () => setIsCollapsed((prev) => !prev);
 
   return (
     <div className="flex flex-col h-screen bg-gray-100 overflow-hidden">
       {/* sticky navbar */}
-      <Navbar
-        user={user}
-        logoutHandler={logout}
-        toggleSidebar={toggleSidebar}
-        setHeaderHeight={setHeaderHeight}
-      />
+      <Navbar toggleSidebar={toggleSidebar} />
 
       {/* main content with sidebar */}
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar
-          user={user}
-          isCollapsed={isCollapsed}
-          headerHeight={headerHeight}
-          sidebarWidth={sidebarWidth}
-        />
+        <Sidebar isCollapsed={isCollapsed} />
 
         <main
           className={`${

@@ -1,21 +1,13 @@
 import { LogOut } from "lucide-react";
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import userAvatarImage from "../../assets/images/avatar.png";
 import { useAuth } from "../../contexts/AuthContext";
 import { capitalize } from "../../utils/helper";
 
-const Navbar = ({ user, toggleSidebar, setHeaderHeight }) => {
-  const { logout } = useAuth();
+const Navbar = ({ toggleSidebar }) => {
+  const { user, logout } = useAuth();
 
   const headerRef = useRef(null);
-
-  useEffect(() => {
-    if (headerRef.current) {
-      setHeaderHeight(headerRef.current.offsetHeight);
-    }
-
-    return () => setHeaderHeight(0);
-  }, [setHeaderHeight]);
 
   return (
     <header

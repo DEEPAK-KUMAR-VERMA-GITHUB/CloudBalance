@@ -9,6 +9,8 @@ import Dashboard from "./pages/Dahboard";
 import LoginPage from "./pages/LoginPage";
 import Onboarding from "./pages/Onboarding";
 import UserManagement from "./pages/UserManagement";
+import { UserRoles } from "./apis/usersData";
+import Unauthorized from "./pages/Unauthorized";
 
 function App() {
   const { user } = useAuth();
@@ -29,10 +31,8 @@ function App() {
 
       {/* protected routes */}
 
-      <Route
-        element={<ProtectedRoute roles={["Admin", "ReadOnly", "Customer"]} />}
-      >
-        <Route element={<MainLayout user={user} />}>
+      <Route element={<ProtectedRoute roles={Object.values(UserRoles)} />}>
+        <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/cost-explorer" element={<CostExplorer />} />
           <Route path="/aws-services" element={<AwsServices />} />
@@ -40,26 +40,19 @@ function App() {
       </Route>
 
       {/* Admin-only routes */}
-      <Route element={<ProtectedRoute roles={["Admin"]} />}>
-        <Route element={<MainLayout user={user} />}>
+      <Route element={<ProtectedRoute roles={UserRoles.ADMIN} />}>
+        <Route element={<MainLayout />}>
           <Route path="/user-management" element={<UserManagement />} />
           <Route path="/user-management/add-user" element={<AddNewUser />} />
           <Route path="/onboarding" element={<Onboarding />} />
         </Route>
       </Route>
-      {/* 
-      <Route
-        path="/"
-        element={
-          user?.isAuthenticated ? (
-            <Navigate to="/dashboard" replace />
-          ) : (
-            <Navigate to="/login" replace />
-          )
-        }
-      /> */}
+
+      {/* unauthorized route */}
+      <Route path="/unauthorized" element={<Unauthorized />} />
+
       {/* Catch all */}
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
 }

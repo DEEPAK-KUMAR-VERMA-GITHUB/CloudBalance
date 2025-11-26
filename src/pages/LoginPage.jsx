@@ -1,19 +1,18 @@
 import { useState } from "react";
-import FormContainer from "../components/form/FormContainer";
-import CloudkeeperLogo from "./../assets/images/cloudkeeper-logo.png";
-import InputField from "../components/form/InputField";
-import ErrorMessage from "../components/form/ErrorMessage";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import Button from "../components/form/Button";
+import ErrorMessage from "../components/form/ErrorMessage";
+import FormContainer from "../components/form/FormContainer";
+import InputField from "../components/form/InputField";
+import Footer from "../components/layout/Footer";
+import { useAuth } from "../contexts/AuthContext";
 import {
   sanitizeInput,
   validateEmail,
   validatePassword,
 } from "../utils/validation";
-import toast from "react-hot-toast";
-import { login } from "../apis/auth";
-import { useAuth } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
-import Footer from "../components/layout/Footer";
+import CloudkeeperLogo from "./../assets/images/cloudkeeper-logo.png";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -24,7 +23,7 @@ const LoginPage = () => {
     general: "",
   });
   const [loading, setLoading] = useState(false);
-  const { login: authLogin } = useAuth();
+  const { login } = useAuth();
 
   const navigate = useNavigate();
 
@@ -63,13 +62,6 @@ const LoginPage = () => {
     try {
       await login(email, password);
       toast.success("Login successful!");
-      authLogin({
-        name: "Deepak Kumar Verma",
-        email,
-        role: "Admin",
-        isAuthenticated: true,
-      });
-      // Redirect or perform further actions upon successful login
       navigate("/dashboard");
     } catch (err) {
       console.error(err);

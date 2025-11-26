@@ -1,6 +1,7 @@
 import { DynamicIcon } from "lucide-react/dynamic";
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 const menuConfig = {
   Admin: [
@@ -22,14 +23,15 @@ const menuConfig = {
     { name: "AWS Services", href: "/aws-services", icon: "monitor-cloud" },
   ],
 };
-const Sidebar = ({ user, isCollapsed, headerHeight }) => {
+const Sidebar = ({ isCollapsed }) => {
+  const {user} = useAuth();
   const menuItems = menuConfig[user.role] || [];
 
   return (
     <>
       {/* sidebar */}
       <nav
-        className={`fixed top-[${headerHeight}] left-0 h-full bg-white shadow-md overflow-y-auto transition`}
+        className={`fixed left-0 h-full bg-white shadow-md overflow-y-auto transition`}
         aria-label="Sidebar Navigation"
       >
         <ul className="flex flex-col space-y-1 p-2">
@@ -63,15 +65,6 @@ const Sidebar = ({ user, isCollapsed, headerHeight }) => {
           ))}
         </ul>
       </nav>
-
-      {/* overlay for mobile sidebar
-      {isCollapsed && (
-        <div
-          onClick={toggleSidebar}
-          className="fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
-          aria-hidden="true"
-        />
-      )} */}
     </>
   );
 };

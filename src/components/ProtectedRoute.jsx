@@ -1,13 +1,16 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-const ProtectedRoute = ({ roles = [] }) => {
+const ProtectedRoute = ({ roles }) => {
   const { user } = useAuth();
 
   // redirect to login if not authenticated
   if (!user) {
     return <Navigate to="/login" replace />;
   }
+
+  // normalize roles to an array so callers can pass a single string or an array
+  roles = roles ? (Array.isArray(roles) ? roles : [roles]) : [];
 
   // redirect to unauthorized if role not sufficient
   if (roles.length > 0 && !roles.includes(user?.role)) {
