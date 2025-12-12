@@ -2,6 +2,7 @@ import { DynamicIcon } from "lucide-react/dynamic";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useSelector } from "react-redux";
 
 const menuConfig = {
   Admin: [
@@ -24,7 +25,9 @@ const menuConfig = {
   ],
 };
 const Sidebar = ({ isCollapsed }) => {
-  const {user} = useAuth();
+  // const {user} = useAuth();
+    const {user} = useSelector(state => state.auth)
+
   const menuItems = menuConfig[user.role] || [];
 
   return (

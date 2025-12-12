@@ -13,6 +13,8 @@ import {
   validatePassword,
 } from "../utils/validation";
 import CloudkeeperLogo from "./../assets/images/cloudkeeper-logo.png";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/actions";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -23,9 +25,10 @@ const LoginPage = () => {
     general: "",
   });
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  // const { login } = useAuth();
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleInputChange = (setter, key) => (e) => {
     const sanitized = sanitizeInput(e.target.value);
@@ -60,7 +63,8 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      await login(email, password);
+      // await login(email, password);
+      await dispatch(login(email, password))
       toast.success("Login successful!");
       navigate("/dashboard");
     } catch (err) {

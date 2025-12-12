@@ -11,6 +11,8 @@ import {
 import { UserRoles } from "../../apis/usersData";
 import { validateEmail } from "../../utils/validation";
 import { apiAddUser, apiUpdateUser } from "../../apis/services/userServices";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser, updateUser } from "../../redux/actions";
 
 const roleOptions = Object.values(UserRoles).map((role) => ({
   label: role,
@@ -37,8 +39,11 @@ function validateAddUserForm(formData) {
 const UserForm = ({ user, isEdit = false }) => {
   const [form, setForm] = useState(defaultForm);
   const [errors, setErrors] = useState({});
-  const [submitting, setSubmitting] = useState(false);
+
+  const { loading } = useSelector((state) => state.users);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (user && isEdit) {
@@ -69,22 +74,21 @@ const UserForm = ({ user, isEdit = false }) => {
       return;
     }
 
-    setSubmitting(true);
-
     try {
       if (isEdit) {
-        await apiUpdateUser(user.id, form);
-        toast.success("User updated successfully!");
-        navigate("/user-management");
-        return;
+        // await apiUpdateUser(user.id, form);
+        await dispatch(updateUser(user.id, form));
+        await toast.success("User updated successfully!");
+      } else {
+        // await apiAddUser(form);
+        await dispatch(addUser(form));
+        toast.success("User added successfully!");
       }
-      await apiAddUser(form);
-      toast.success("User added successfully!");
       navigate("/user-management");
     } catch (error) {
-      setErrors({ general: error.message || "Failed to add user." });
-    } finally {
-      setSubmitting(false);
+      const errorMsg = error?.message || "Operation failed. Please try again.";
+      setErrors({ general: errorMsg });
+      toast.error(errorMsg);
     }
   }
   return (
@@ -135,7 +139,7 @@ const UserForm = ({ user, isEdit = false }) => {
           <Button
             type="submit"
             label={isEdit ? "Update User" : "Add User"}
-            isLoading={submitting}
+            isLoading={loading}
             onClick={handleSubmit}
           />
         </form>

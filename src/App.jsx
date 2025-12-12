@@ -14,12 +14,14 @@ import {
   EditUser,
   AddNewUser,
 } from "./pages";
+import { useSelector } from "react-redux";
 
 function App() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
+  const {user} = useSelector(state => state.auth)
 
   return (
-    <Routes>
+    <Routes> 
       {/* login route */}
       <Route
         path="/login"

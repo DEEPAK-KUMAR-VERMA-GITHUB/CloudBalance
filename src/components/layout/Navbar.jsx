@@ -3,17 +3,26 @@ import React, { useRef } from "react";
 import userAvatarImage from "../../assets/images/avatar.png";
 import { useAuth } from "../../contexts/AuthContext";
 import { capitalize } from "../../utils/helper";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../redux/actions";
+import toast from "react-hot-toast";
 
 const Navbar = ({ toggleSidebar }) => {
-  const { user, logout } = useAuth();
+  // const { user, logout } = useAuth();
+  const { user } = useSelector((state) => state.auth);
 
-  const headerRef = useRef(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    toast.success("Logged out successfully");
+    navigate("/login");
+  };
 
   return (
-    <header
-      ref={headerRef}
-      className="w-full bg-white flex items-center justify-between px-6 py-3 sticky top-0 z-50"
-    >
+    <header className="w-full bg-white flex items-center justify-between px-6 py-3 sticky top-0 z-50">
       <div className="flex items-center">
         {/* branding */}
         <div className="text-xl font-semibold tracking-wide">CloudBalance</div>
@@ -48,7 +57,7 @@ const Navbar = ({ toggleSidebar }) => {
         </div>
 
         <button
-          onClick={logout}
+          onClick={handleLogout}
           aria-label="Logout"
           type="button"
           className="flex items-center gap-1 p-2 border border-blue-800 rounded text-blue-800 hover:bg-blue-100 transition-colors  cursor-pointer "
