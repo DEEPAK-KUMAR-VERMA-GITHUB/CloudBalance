@@ -1,56 +1,62 @@
-import { createContext, useContext, useState } from 'react';
-import { LOCAL_STORAGE_USER_KEY } from '../utils/constants';
-import { UserRoles } from '../apis/usersData';
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
+import { LOCAL_STORAGE_USER_KEY } from "../utils/constants";
+import { UserRoles } from "../apis/usersData";
 
-const AuthContext = createContext(null);
+const AuthContext = createContext(undefined);
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
+  return context;
+};
 
-const fetchUserFromLocalStorage = () => {
-
-  const user = localStorage.getItem(LOCAL_STORAGE_USER_KEY);
-  return user ? JSON.parse(user) : null;
-
-}
+const loadUserFromStorage = () => {
+  try {
+    const storedUser = localStorage.getItem(LOCAL_STORAGE_USER_KEY);
+    return storedUser ? JSON.parse(storedUser) : null;
+  } catch {
+    return null;
+  }
+};
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => fetchUserFromLocalStorage());
+  const [user, setUser] = useState(() => loadUserFromStorage());
 
-  const login = async (email, password) => {
-    return new Promise((resolve, reject) => {
-      // simulate async API call
-      setTimeout(() => {
-        if (email === "deepak@gmail.com" && password === "SecurePassword@123") {
-          const loggedInUser = {
-            name: "Deepak Kumar Verma",
-            email,
-            role: UserRoles.ADMIN,
-            isAuthenticated: true,
-          };
-          setUser(loggedInUser);
-          localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(loggedInUser));
-          resolve(loggedInUser);
-        } else {
-          reject(new Error("Invalid credentials"));
-        }
-      }, 300);
-    });
-  };
+  const login = useCallback(async (email, password) => {
+    await new Promise((res) => setTimeout(res, 300)); // simulated API call
 
-  const logout = () => {
+    if (email === "deepak@gmail.com" && password === "SecurePassword@123") {
+      const loggedInUser = {
+        name: "Deepak Kumar Verma",
+        email,
+        role: UserRoles.ADMIN,
+        isAuthenticated: true,
+      };
+
+      setUser(loggedInUser);
+      localStorage.setItem(
+        LOCAL_STORAGE_USER_KEY,
+        JSON.stringify(loggedInUser)
+      );
+
+      return loggedInUser;
+    } else {
+      throw new Error("Invalid credentials");
+    }
+  }, []);
+
+  const logout = useCallback(() => {
     setUser(null);
     localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
-  };
+  }, []);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        login,
-        logout,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = useMemo(() => ({ user, login, logout }), [user, login, logout]);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

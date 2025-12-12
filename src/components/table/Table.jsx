@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 const sortData = (rows, sortKey, sortOrder) => {
   if (!sortKey) return rows;
@@ -151,7 +151,7 @@ const Table = ({
               >
                 {columns.map((col) => (
                   <td key={col.key} className="px-4 py-2 align-middle">
-                    {col.render ? col.render(row[col.key], row) : row[col.key]}
+                    {col.render && col.render(row[col.key], row) || row[col.key] || "---"}
                   </td>
                 ))}
               </tr>

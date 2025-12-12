@@ -72,6 +72,7 @@ const UserManagement = () => {
         label: "Last Login",
         sortable: true,
         filterable: true,
+        
       },
       {
         key: "action",
