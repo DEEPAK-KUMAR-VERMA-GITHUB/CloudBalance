@@ -1,8 +1,9 @@
 import React from 'react'
+import ResourceTable from '../components/table/ResourceTable'
 
 const CostExplorer = () => {
   return (
-    <div>CostExplorer</div>
+    <ResourceTable />
   )
 }
 

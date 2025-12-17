@@ -22,19 +22,19 @@ const MainLayout = () => {
         <main
           className={`${
             isCollapsed ? "ml-15" : "ml-50"
-          } flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-400 relative`}
+          } p-3 relative flex-1 overflow-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-400`}
           role="main"
           tabIndex={-1}
         >
           <Breadcrumbs />
           <Outlet />
-
-          <Footer
-            leftText={`CloudKeeper ${new Date().getFullYear()} | All Rights Reserved `}
-            rightText={"Contact Us"}
-          />
         </main>
       </div>
+      <Footer
+        leftText={`CloudKeeper ${new Date().getFullYear()} | All Rights Reserved `}
+        rightText={"Contact Us"}
+        isCollapsed={isCollapsed}
+      />
     </div>
   );
 };
