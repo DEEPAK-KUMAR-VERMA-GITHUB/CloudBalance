@@ -30,6 +30,7 @@ const MainLayout = () => {
           <Outlet />
         </main>
       </div>
+      
       <Footer
         leftText={`CloudKeeper ${new Date().getFullYear()} | All Rights Reserved `}
         rightText={"Contact Us"}

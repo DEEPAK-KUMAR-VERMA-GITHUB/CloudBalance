@@ -1,43 +1,28 @@
-import { Info, Pencil } from "lucide-react";
+import { Edit, Info } from "@mui/icons-material";
 import { useEffect, useId, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { apiGetUsers } from "../apis/services/userServices";
 import { Divider, Loader, Switch } from "../components";
 import { Button } from "../components/form";
 import { Table } from "../components/table";
+import { fetchUsers } from "../redux/actions";
 
 const UserManagement = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { users, loading } = useSelector((state) => state.users);
 
   const [twoFactorAuthEnable, setTwoFactorAuthEnable] = useState(false);
 
   const switchKey = useId();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleAddUserClick = () => {
     navigate("add-user");
   };
 
   useEffect(() => {
-    let isMounted = true;
-
-    setLoading(true);
-
-    apiGetUsers()
-      .then((data) => {
-        if (isMounted) {
-          setUsers(data);
-          setLoading(false);
-        }
-      })
-      .catch(() => {
-        if (isMounted) setLoading(false);
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   const columns = useMemo(
     () => [
@@ -50,29 +35,16 @@ const UserManagement = () => {
       { key: "lastName", label: "Last Name", sortable: true, filterable: true },
       { key: "email", label: "Email", sortable: true, filterable: true },
       {
-        key: "roles",
-        label: "Roles",
+        key: "role",
+        label: "Role",
         sortable: false,
         filterable: true,
-        render: (roles) => (
-          <div className="flex gap-1">
-            {roles.map((role, idx) => (
-              <span
-                key={role || idx}
-                className="bg-blue-100 text-blue-700 rounded px-2 py-0.5 text-xs mx-0.5"
-              >
-                {role}
-              </span>
-            ))}
-          </div>
-        ),
       },
       {
         key: "lastLogin",
         label: "Last Login",
         sortable: true,
         filterable: true,
-        
       },
       {
         key: "action",
@@ -82,7 +54,7 @@ const UserManagement = () => {
         render: (_, row) => (
           <div className="flex items-center gap-2 min-w-[260px]">
             <Switch key={`switch-${row.id}`} />
-            <Pencil
+            <Edit
               size={20}
               onClick={() => navigate(`edit-user/${row.id}`, { state: row })}
               className="cursor-pointer text-blue-300 hover:text-blue-700 transition"
@@ -137,7 +109,7 @@ const UserManagement = () => {
       {loading ? (
         <Loader />
       ) : (
-        <Table columns={columns} data={users} pageSize={10} />
+        <Table columns={columns} data={users.content} pageSize={10} />
       )}
     </>
   );

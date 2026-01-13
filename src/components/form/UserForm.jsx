@@ -1,43 +1,47 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { UserRoles } from "../../apis/usersData";
+import { addUser, updateUser } from "../../redux/actions";
+import { validateEmail } from "../../utils/validation";
 import {
   Button,
   ErrorMessage,
   FormContainer,
   InputField,
-  MultiSelect,
+  InputSelect,
 } from "../form";
-import { UserRoles } from "../../apis/usersData";
-import { validateEmail } from "../../utils/validation";
-import { apiAddUser, apiUpdateUser } from "../../apis/services/userServices";
-import { useDispatch, useSelector } from "react-redux";
-import { addUser, updateUser } from "../../redux/actions";
-
-const roleOptions = Object.values(UserRoles).map((role) => ({
-  label: role,
-  value: role,
-}));
 
 const defaultForm = {
   firstName: "",
   lastName: "",
   email: "",
-  roles: [],
+  role: "",
 };
 
 function validateAddUserForm(formData) {
+  console.log(formData);
   const errors = {};
   if (!formData.firstName.trim()) errors.firstName = "First name is required.";
   if (!formData.lastName.trim()) errors.lastName = "Last name is required.";
   if (!formData.email.trim() || !validateEmail(formData.email))
     errors.email = "Valid email is required.";
-  if (!formData.roles.length) errors.roles = "Select at least one role.";
+  if (!formData.role.trim()) errors.role = "Valid role is required.";
   return errors;
 }
 
 const UserForm = ({ user, isEdit = false }) => {
-  const [form, setForm] = useState(defaultForm);
+  const [form, setForm] = useState(
+    isEdit
+      ? {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          role: user.role,
+        }
+      : defaultForm
+  );
   const [errors, setErrors] = useState({});
 
   const { loading } = useSelector((state) => state.users);
@@ -51,7 +55,7 @@ const UserForm = ({ user, isEdit = false }) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        roles: user.roles,
+        role: user.role,
       });
     } else {
       setForm(defaultForm);
@@ -126,12 +130,12 @@ const UserForm = ({ user, isEdit = false }) => {
               error={errors.email}
               isRequired
             />
-            <MultiSelect
-              label="Select Roles"
-              options={roleOptions}
-              value={form.roles}
-              onChange={(value) => handleChange("roles", value)}
-              error={errors.roles}
+            <InputSelect
+              label={"Select Role"}
+              options={Object.values(UserRoles)}
+              value={form.role}
+              onChange={(e) => handleChange("role", e.target.value)}
+              error={errors.role}
               isRequired
             />
           </div>

@@ -1,15 +1,14 @@
 import { useState, useMemo, useCallback } from "react";
 import {
   Filter,
-  Copy,
-  CheckSquare,
+  ContentCopy,
+  CheckBox,
   Square,
-  ChevronUp,
-  ChevronDown,
-  MoreVertical,
-  Loader2,
-} from "lucide-react";
+  ExpandMore,
+  ExpandLess,
+} from "@mui/icons-material";
 import { FixedSizeList as List } from "react-window";
+import Loader from "./src/components/Loader";
 
 /* ================= TYPES ================= */
 export type SortDirection = "asc" | "desc" | null;
@@ -130,7 +129,7 @@ export default function GenericTable<T>({
       loadMore();
       return (
         <div style={style} className="flex items-center justify-center text-gray-500">
-          <Loader2 className="animate-spin" /> Loading more…
+          <Loader />
         </div>
       );
     }
@@ -149,7 +148,7 @@ export default function GenericTable<T>({
       >
         <div className="flex items-center justify-center">
           <button onClick={() => toggleRow(id)}>
-            {selected.has(id) ? <CheckSquare /> : <Square />}
+            {selected.has(id) ? <CheckBox /> : <Square />}
           </button>
         </div>
 
@@ -157,7 +156,7 @@ export default function GenericTable<T>({
           <div key={String(col.key)} className="px-4 py-3 flex items-center gap-2">
             {col.render ? col.render(row[col.key], row) : String(row[col.key])}
             {String(col.key).toLowerCase().includes("id") && (
-              <Copy
+              <ContentCopy
                 className="w-4 h-4 cursor-pointer text-gray-400"
                 onClick={() => navigator.clipboard.writeText(String(row[col.key]))}
               />
@@ -169,7 +168,7 @@ export default function GenericTable<T>({
         <div className="flex items-center justify-center">
           {rowActions.length > 0 && (
             <div className="relative group">
-              <MoreVertical className="cursor-pointer" />
+              <ExpandMore className="cursor-pointer" />
               <div className="absolute right-0 mt-2 hidden group-hover:block bg-white border rounded-md shadow-md z-20">
                 {rowActions.map((action) => (
                   <button
@@ -216,7 +215,7 @@ export default function GenericTable<T>({
       >
         <div className="flex items-center justify-center">
           <button onClick={() => setSelected(allSelected ? new Set() : new Set(data.map(rowKey)))}>
-            {allSelected ? <CheckSquare /> : <Square />}
+            {allSelected ? <CheckBox /> : <Square />}
           </button>
         </div>
 
@@ -227,8 +226,8 @@ export default function GenericTable<T>({
             onClick={() => col.sortable && onSort(String(col.key))}
           >
             {col.label}
-            {col.sortable && sortKey === col.key && sortDir === "asc" && <ChevronUp />}
-            {col.sortable && sortKey === col.key && sortDir === "desc" && <ChevronDown />}
+            {col.sortable && sortKey === col.key && sortDir === "asc" && <ExpandMore />}
+            {col.sortable && sortKey === col.key && sortDir === "desc" && <ExpandLess />}
           </div>
         ))}
         <div />

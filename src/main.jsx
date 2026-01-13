@@ -7,14 +7,15 @@ import App from "./App.jsx";
 import "./index.css";
 import { Provider } from "react-redux";
 import { store } from "./redux/store/store.js";
+import AuthInitializer from "./components/AuthInitializer.jsx";
 
 createRoot(document.getElementById("root")).render(
-  // <StrictMode>
-    <Provider store={store}>
-      <Router>
+  <Provider store={store}>
+    <Router>
+      <AuthInitializer>
         <App />
         <Toaster position="top-center" />
-      </Router>
-    </Provider>
-  // </StrictMode>
+      </AuthInitializer>
+    </Router>
+  </Provider>
 );

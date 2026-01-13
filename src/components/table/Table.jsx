@@ -73,7 +73,7 @@ const Table = ({
   const totalPages = Math.ceil(processedData.length / pageSize);
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
-    return processedData.slice(start, start + pageSize);
+    return processedData?.slice(start, start + pageSize);
   }, [processedData, currentPage, pageSize]);
 
   return (

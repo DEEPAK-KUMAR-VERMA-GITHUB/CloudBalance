@@ -1,4 +1,12 @@
-import { login, logout } from "./authActions";
-import { addUser, updateUser, deleteUser } from "./userActions";
+import { login, logout, checkAuth } from "./authActions";
+import { addUser, updateUser, deleteUser, fetchUsers } from "./userActions";
 
-export { login, logout, addUser, updateUser, deleteUser };
+export {
+  login,
+  logout,
+  checkAuth,
+  fetchUsers,
+  addUser,
+  updateUser,
+  deleteUser,
+};

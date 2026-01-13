@@ -1,32 +1,30 @@
+import { useSelector } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
+import { UserRoles } from "./apis/usersData";
 import MainLayout from "./components/layout/MainLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { useAuth } from "./contexts/AuthContext";
-import { UserRoles } from "./apis/usersData";
 import {
+  AddNewUser,
   AwsServices,
   CostExplorer,
   Dashboard,
+  EditUser,
   LoginPage,
   Onboarding,
-  UserManagement,
   Unauthorized,
-  EditUser,
-  AddNewUser,
+  UserManagement,
 } from "./pages";
-import { useSelector } from "react-redux";
 
 function App() {
-  // const { user } = useAuth();
-  const {user} = useSelector(state => state.auth)
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   return (
-    <Routes> 
+    <Routes>
       {/* login route */}
       <Route
         path="/login"
         element={
-          user && user.isAuthenticated ? (
+          user && isAuthenticated ? (
             <Navigate to="/dashboard" replace />
           ) : (
             <LoginPage />
@@ -35,7 +33,6 @@ function App() {
       />
 
       {/* protected routes */}
-
       <Route element={<ProtectedRoute roles={Object.values(UserRoles)} />}>
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />

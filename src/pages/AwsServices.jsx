@@ -1,9 +1,8 @@
-import React from 'react'
+import React from "react";
+import ResourceSchedulerDashboard from "../components/RescourceScheduler/ResourceSchedulerDashboard";
 
 const AwsServices = () => {
-  return (
-    <div>AwsServices</div>
-  )
-}
+  return <ResourceSchedulerDashboard resourceType="EC2" />;
+};
 
-export default AwsServices
+export default AwsServices;

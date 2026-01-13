@@ -1,23 +1,35 @@
-import { DynamicIcon } from "lucide-react/dynamic";
 import React from "react";
-import { NavLink } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
 import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
+import {
+  PeopleAlt,
+  DashboardCustomize,
+  DataExploration,
+  FilterDrama,
+} from "@mui/icons-material";
 
 const menuConfig = {
   Admin: [
     {
       name: "User Management",
       href: "/user-management",
-      icon: "user-round-cog",
+      icon: <PeopleAlt />,
     },
-    { name: "Onboarding", href: "/onboarding", icon: "layout-dashboard" },
-    { name: "Cost Explorer", href: "/cost-explorer", icon: "hand-coins" },
-    { name: "AWS Services", href: "/aws-services", icon: "monitor-cloud" },
+    { name: "Onboarding", href: "/onboarding", icon: <DashboardCustomize /> },
+    {
+      name: "Cost Explorer",
+      href: "/cost-explorer",
+      icon: <DataExploration />,
+    },
+    { name: "AWS Services", href: "/aws-services", icon: <FilterDrama /> },
   ],
   ReadOnly: [
-    { name: "Cost Explorer", href: "/cost-explorer", icon: "hand-coins" },
-    { name: "AWS Services", href: "/aws-services", icon: "monitor-cloud" },
+    {
+      name: "Cost Explorer",
+      href: "/cost-explorer",
+      icon: <DataExploration />,
+    },
+    { name: "AWS Services", href: "/aws-services", icon: <FilterDrama /> },
   ],
   Customer: [
     { name: "Cost Explorer", href: "/cost-explorer", icon: "hand-coins" },
@@ -26,7 +38,7 @@ const menuConfig = {
 };
 const Sidebar = ({ isCollapsed }) => {
   // const {user} = useAuth();
-    const {user} = useSelector(state => state.auth)
+  const { user } = useSelector((state) => state.auth);
 
   const menuItems = menuConfig[user.role] || [];
 
@@ -54,7 +66,7 @@ const Sidebar = ({ isCollapsed }) => {
                 }
               >
                 <div className="flex items-center gap-1">
-                  <DynamicIcon name={icon} />
+                  {icon}
                   <span
                     className={` ${
                       isCollapsed ? "hidden" : "inline"

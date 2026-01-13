@@ -1,20 +1,18 @@
-import { useState } from "react";
-import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/form/Button";
 import ErrorMessage from "../components/form/ErrorMessage";
 import FormContainer from "../components/form/FormContainer";
 import InputField from "../components/form/InputField";
 import Footer from "../components/layout/Footer";
-import { useAuth } from "../contexts/AuthContext";
+import { login } from "../redux/actions";
 import {
   sanitizeInput,
   validateEmail,
   validatePassword,
 } from "../utils/validation";
 import CloudkeeperLogo from "./../assets/images/cloudkeeper-logo.png";
-import { useDispatch } from "react-redux";
-import { login } from "../redux/actions";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -24,11 +22,12 @@ const LoginPage = () => {
     password: "",
     general: "",
   });
-  const [loading, setLoading] = useState(false);
-  // const { login } = useAuth();
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const { loading, error, isAuthenticated } = useSelector(
+    (state) => state.auth
+  );
 
   const handleInputChange = (setter, key) => (e) => {
     const sanitized = sanitizeInput(e.target.value);
@@ -47,7 +46,7 @@ const LoginPage = () => {
     }));
   };
 
-  const handelSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const currentErrors = {
@@ -59,29 +58,25 @@ const LoginPage = () => {
     setErrors(currentErrors);
 
     if (Object.values(currentErrors).some(Boolean)) return;
-
-    setLoading(true);
-
     try {
-      // await login(email, password);
-      await dispatch(login(email, password))
-      toast.success("Login successful!");
-      navigate("/dashboard");
-    } catch (err) {
-      console.error(err);
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        general: "Something went wrong during login.",
-      }));
-      toast.error("Login failed. Please check your credentials.");
-    } finally {
-      setLoading(false);
+      // Add await to properly handle the async thunk
+      await dispatch(login(email, password));
+      // Navigation happens in useEffect when isAuthenticated becomes true
+    } catch (error) {
+      // Error is already handled in Redux action and stored in state.auth.error
+      console.error("Login failed:", error);
     }
   };
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <form autoComplete="off" className="w-lg" onSubmit={handelSubmit}>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+      <form autoComplete="off" className="w-lg" onSubmit={handleSubmit}>
         <FormContainer
           label={
             <img
@@ -106,11 +101,7 @@ const LoginPage = () => {
             onChange={handleInputChange(setPassword, "password")}
             error={errors.password}
           />
-          <ErrorMessage
-            message={
-              errors.length > 0 ? errors[0].email || errors[0].general : ""
-            }
-          />
+          <ErrorMessage message={error || errors.general} />
           <Button
             className="cursor-pointer"
             type="submit"
@@ -120,7 +111,11 @@ const LoginPage = () => {
         </FormContainer>
       </form>
 
-      <Footer leftText={"Have Questions ? Talk to our Team"} rightText={`CloudKeeper ${new Date().getFullYear()} | All Rights Reserved `} />
+      <Footer
+        className={"absolute bottom-0 -left-49 w-full"}
+        leftText={"Have Questions ? Talk to our Team"}
+        rightText={`CloudKeeper ${new Date().getFullYear()} | All Rights Reserved `}
+      />
     </div>
   );
 };

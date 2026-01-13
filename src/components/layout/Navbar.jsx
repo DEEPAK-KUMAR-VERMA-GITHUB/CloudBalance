@@ -1,19 +1,26 @@
-import { LogOut } from "lucide-react";
-import React, { useRef } from "react";
-import userAvatarImage from "../../assets/images/avatar.png";
-import { useAuth } from "../../contexts/AuthContext";
-import { capitalize } from "../../utils/helper";
+import React, { useEffect } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import userAvatarImage from "../../assets/images/avatar.png";
 import { logout } from "../../redux/actions";
-import toast from "react-hot-toast";
+import { capitalize } from "../../utils/helper";
+import { KeyboardArrowDown, Logout } from "@mui/icons-material";
+import { Option, Select, selectClasses } from "@mui/joy";
+import { fetchAllAccounts } from "../../redux/actions/awsAccountActions";
 
 const Navbar = ({ toggleSidebar }) => {
-  // const { user, logout } = useAuth();
   const { user } = useSelector((state) => state.auth);
+  const { accounts, loading, error } = useSelector(
+    (state) => state.awsAccounts
+  );
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(fetchAllAccounts());
+  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -34,6 +41,25 @@ const Navbar = ({ toggleSidebar }) => {
         >
           ☰
         </button>
+
+        <Select
+          variant="plain"
+          placeholder="All Accounts"
+          indicator={<KeyboardArrowDown />}
+          sx={{
+            width: 150,
+            [`& .${selectClasses.indicator}`]: {
+              transition: "0.2s",
+              [`&.${selectClasses.expanded}`]: {
+                transform: "rotate(-180deg)",
+              },
+            },
+          }}
+        >
+          {accounts?.map((account) => (
+            <Option key={account.id}>{account.accountAlias}</Option>
+          ))}
+        </Select>
       </div>
 
       {/* user info and logout */}
@@ -62,7 +88,7 @@ const Navbar = ({ toggleSidebar }) => {
           type="button"
           className="flex items-center gap-1 p-2 border border-blue-800 rounded text-blue-800 hover:bg-blue-100 transition-colors  cursor-pointer "
         >
-          <LogOut />
+          <Logout />
           Logout
         </button>
       </div>
