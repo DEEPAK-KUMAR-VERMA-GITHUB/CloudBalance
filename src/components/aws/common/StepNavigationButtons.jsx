@@ -1,4 +1,7 @@
-import { Box, Button } from "@mui/joy";
+import { Button, Stack } from "@mui/joy";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { resetOnboarding } from "../../../redux/actions/awsOnboardingActions";
 
 const StepNavigationButtons = ({
   onBack,
@@ -9,20 +12,33 @@ const StepNavigationButtons = ({
   nextLabel = "Next",
   backLabel = "Back",
 }) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleCancel = () => {
+    navigate("/aws-accounts");
+    dispatch(resetOnboarding());
+  };
+
   return (
-    <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
-      <Button
-        variant="outlined"
-        color="neutral"
-        disabled={isFirstStep || isLoading}
-        onClick={onBack}
-      >
-        {backLabel}
+    <Stack mt={4} direction={"row"} justifyContent={"space-between"}>
+      <Button variant="outlined" color="danger" onClick={handleCancel}>
+        Cancel
       </Button>
-      <Button onClick={onNext} loading={isLoading} disabled={isLoading}>
-        {nextLabel}
-      </Button>
-    </Box>
+      <Stack direction={"row"} gap={2}>
+        <Button
+          variant="outlined"
+          color="neutral"
+          disabled={isFirstStep || isLoading}
+          onClick={onBack}
+        >
+          {backLabel}
+        </Button>
+        <Button onClick={onNext} loading={isLoading} disabled={isLoading}>
+          {nextLabel}
+        </Button>
+      </Stack>
+    </Stack>
   );
 };
 

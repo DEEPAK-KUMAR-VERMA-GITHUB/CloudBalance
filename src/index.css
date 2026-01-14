@@ -14,3 +14,7 @@
     min-height: 100vh;
   }
 }
+
+a[aria-current="page"] svg {
+  color: white;
+}

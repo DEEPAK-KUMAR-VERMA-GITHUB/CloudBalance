@@ -8,14 +8,17 @@ import "./index.css";
 import { Provider } from "react-redux";
 import { store } from "./redux/store/store.js";
 import AuthInitializer from "./components/AuthInitializer.jsx";
+import { CssVarsProvider } from "@mui/joy";
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <Router>
-      <AuthInitializer>
-        <App />
-        <Toaster position="top-center" />
-      </AuthInitializer>
+      <CssVarsProvider>
+        <AuthInitializer>
+          <App />
+          <Toaster position="top-center" />
+        </AuthInitializer>
+      </CssVarsProvider>
     </Router>
   </Provider>
 );

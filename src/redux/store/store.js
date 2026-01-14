@@ -4,7 +4,9 @@ import {
   authReducer,
   awsAccountReducer,
   awsOnboardingReducer,
+  costExplorerReducer,
   schedulerReducer,
+  userAccountsReducer,
   usersReducer,
 } from "../reducers";
 
@@ -13,7 +15,9 @@ const rootReducer = combineReducers({
   users: usersReducer,
   awsOnboarding: awsOnboardingReducer,
   awsAccounts: awsAccountReducer,
+  costExplorer: costExplorerReducer,
   scheduler: schedulerReducer,
+  userAccounts: userAccountsReducer,
 });
 
 // enable redux devtools extenstion if available

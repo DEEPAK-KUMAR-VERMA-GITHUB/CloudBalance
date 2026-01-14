@@ -1,10 +1,19 @@
 import {
   apiAddUser,
   apiDeleteUser,
+  apifetchUserAccounts,
   apiGetUsers,
   apiUpdateUser,
+  assignUserAwsAccounts,
+  revokeUserAwsAccounts,
 } from "../../apis/services/userServices";
 import {
+  USER_ACCOUNTS_FETCH_FAIL,
+  USER_ACCOUNTS_FETCH_REQUEST,
+  USER_ACCOUNTS_FETCH_SUCCESS,
+  USER_ACCOUNTS_UPDATE_FAIL,
+  USER_ACCOUNTS_UPDATE_REQUEST,
+  USER_ACCOUNTS_UPDATE_SUCCESS,
   USERS_ADD_FAILURE,
   USERS_ADD_REQUEST,
   USERS_ADD_SUCCESS,
@@ -19,11 +28,14 @@ import {
   USERS_UPDATE_SUCCESS,
 } from "../constants";
 
-export const fetchUsers = () => async (dispatch) => {
+export const fetchUsers = (params) => async (dispatch) => {
   dispatch({ type: USERS_FETCH_REQUEST });
+
+  const query = new URLSearchParams(params).toString();
+
   try {
-    const users = await apiGetUsers();
-    dispatch({ type: USERS_FETCH_SUCCESS, payload: users });
+    const response = await apiGetUsers(query);
+    dispatch({ type: USERS_FETCH_SUCCESS, payload: response.data });
   } catch (error) {
     dispatch({
       type: USERS_FETCH_FAILURE,
@@ -73,3 +85,55 @@ export const deleteUser = (id) => async (dispatch) => {
     throw error;
   }
 };
+
+export const fetchUserAssignedAccounts = (userId) => async (dispatch) => {
+  dispatch({ type: USER_ACCOUNTS_FETCH_REQUEST });
+  try {
+    const data = await apifetchUserAccounts(userId);
+    dispatch({ type: USER_ACCOUNTS_FETCH_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: USER_ACCOUNTS_FETCH_FAIL,
+      payload: error.response?.data || error.message,
+    });
+  }
+};
+
+export const assignUserAccounts = (userId, accountIds) => async (dispatch) => {
+  try {
+    dispatch({ type: USER_ACCOUNTS_UPDATE_REQUEST });
+
+    const data = await assignUserAwsAccounts(userId, accountIds);
+
+    dispatch({
+      type: USER_ACCOUNTS_UPDATE_SUCCESS,
+      payload: data,
+    });
+    dispatch(fetchUserAssignedAccounts(userId))
+  } catch (error) {
+    dispatch({
+      type: USER_ACCOUNTS_UPDATE_FAIL,
+      payload: error.response?.data || error.message,
+    });
+  }
+};
+
+export const unAssignUserAccounts =
+  (userId, accountIds) => async (dispatch) => {
+    try {
+      dispatch({ type: USER_ACCOUNTS_UPDATE_REQUEST });
+
+      const data = await revokeUserAwsAccounts(userId, accountIds);
+
+      dispatch({
+        type: USER_ACCOUNTS_UPDATE_SUCCESS,
+        payload: data,
+      });
+      dispatch(fetchUserAssignedAccounts(userId))
+    } catch (error) {
+      dispatch({
+        type: USER_ACCOUNTS_UPDATE_FAIL,
+        payload: error.response?.data || error.message,
+      });
+    }
+  };

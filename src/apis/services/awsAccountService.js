@@ -9,3 +9,9 @@ export const apiFetchAllAwsAccounts = async () => {
     const response = await apiClient.get("/accounts");
     return response.data.data;
 }
+
+
+export const apiFetchAssignedAwsAccounts = async () => {
+    const response = await apiClient.get("/accounts/my-accounts");
+    return response.data.data;
+}

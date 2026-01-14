@@ -194,7 +194,7 @@ const StepIAMRole = ({ onNext, onBack, isFirstStep }) => {
       {/* Navigation Buttons */}
       <StepNavigationButtons
         onBack={onBack}
-        onNext={onNext}
+        onNext={handleNext}
         isFirstStep="true"
       />
     </Box>

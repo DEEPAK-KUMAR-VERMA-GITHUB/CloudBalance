@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-const useDebounce = (value, delay = 300) => {
+export const useDebounce = (value, delay = 50) => {
   const [debounced, setDebounced] = useState(value);
 
   useMemo(() => {

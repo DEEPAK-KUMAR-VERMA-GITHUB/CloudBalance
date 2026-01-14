@@ -1,8 +1,22 @@
-import { USERS_ADD_REQUEST, USERS_ADD_SUCCESS, USERS_DELETE_REQUEST, USERS_DELETE_SUCCESS, USERS_FETCH_FAILURE, USERS_FETCH_REQUEST, USERS_FETCH_SUCCESS, USERS_UPDATE_REQUEST, USERS_UPDATE_SUCCESS } from "../constants";
-
+import {
+  USERS_ADD_REQUEST,
+  USERS_ADD_SUCCESS,
+  USERS_DELETE_REQUEST,
+  USERS_DELETE_SUCCESS,
+  USERS_FETCH_FAILURE,
+  USERS_FETCH_REQUEST,
+  USERS_FETCH_SUCCESS,
+  USERS_UPDATE_REQUEST,
+  USERS_UPDATE_SUCCESS,
+} from "../constants";
 
 const initialUsersState = {
-  users: [],
+  users: {
+    content: [],
+    page: 0,
+    size: 10,
+    totalElements: 0,
+  },
   loading: false,
   error: null,
 };
@@ -45,7 +59,7 @@ export const usersReducer = (state = initialUsersState, action) => {
       return {
         ...state,
         loading: false,
-        users: state.users.map((user) =>
+        users: state.users.content.map((user) =>
           user.id === action.payload.id ? action.payload : user
         ),
       };
@@ -54,11 +68,10 @@ export const usersReducer = (state = initialUsersState, action) => {
       return {
         ...state,
         loading: false,
-        users: state.users.map((user) => user.id !== action.payload.id),
+        users: state.users.content.map((user) => user.id !== action.payload.id),
       };
 
     default:
       return state;
   }
 };
-

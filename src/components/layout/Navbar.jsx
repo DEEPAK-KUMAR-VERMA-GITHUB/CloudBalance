@@ -7,20 +7,28 @@ import { logout } from "../../redux/actions";
 import { capitalize } from "../../utils/helper";
 import { KeyboardArrowDown, Logout } from "@mui/icons-material";
 import { Option, Select, selectClasses } from "@mui/joy";
-import { fetchAllAccounts } from "../../redux/actions/awsAccountActions";
+import {
+  fetchAllAccounts,
+  fetchAssignedAccounts,
+} from "../../redux/actions/awsAccountActions";
+import { UserRoles } from "../../apis/usersData";
 
 const Navbar = ({ toggleSidebar }) => {
-  const { user } = useSelector((state) => state.auth);
-  const { accounts, loading, error } = useSelector(
-    (state) => state.awsAccounts
-  );
+  const { user, loading } = useSelector((state) => state.auth);
+  const { accounts, error } = useSelector((state) => state.awsAccounts);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(fetchAllAccounts());
-  }, []);
+    if (!loading) {
+      if (user.role !== UserRoles.CUSTOMER) {
+        dispatch(fetchAllAccounts());
+      } else {
+        dispatch(fetchAssignedAccounts());
+      }
+    }
+  }, [dispatch, user.role, loading]);
 
   const handleLogout = () => {
     dispatch(logout());

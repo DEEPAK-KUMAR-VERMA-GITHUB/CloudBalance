@@ -1,11 +1,8 @@
 import apiClient from "../apiClient";
-import { dummyUsers } from "../usersData";
 
-let users = [...dummyUsers];
-
-export async function apiGetUsers() {
-  const response = await apiClient.get("/users");
-  return response.data.data;
+export async function apiGetUsers(query) {
+  const response = await apiClient.get(`/users?${query}`);
+  return response.data;
 }
 
 export async function apiAddUser(userData) {
@@ -20,5 +17,26 @@ export async function apiUpdateUser(id, fields) {
 
 export async function apiDeleteUser(id) {
   const response = await apiClient.delete(`/users/${id}`);
+  return response.data;
+}
+
+export async function apifetchUserAccounts(id) {
+  const response = await apiClient.get(`/users/${id}/accounts`);
+  return response.data.data;
+}
+
+export async function assignUserAwsAccounts(userId, accountIds) {
+  const response = await apiClient.post(
+    `/users/${userId}/accounts/assign-bulk`,
+    accountIds
+  );
+  return response.data;
+}
+
+export async function revokeUserAwsAccounts(userId, accountIds) {
+  const response = await apiClient.post(
+    `/users/${userId}/accounts/remove-bulk`,
+    accountIds
+  );
   return response.data;
 }

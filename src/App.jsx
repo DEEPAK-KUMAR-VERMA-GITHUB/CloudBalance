@@ -6,13 +6,14 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import {
   AddNewUser,
   AwsServices,
-  CostExplorer,
   Dashboard,
   EditUser,
   LoginPage,
   Onboarding,
   Unauthorized,
   UserManagement,
+  AwsAccounts,
+  CostExplorerContainer,
 } from "./pages";
 
 function App() {
@@ -36,7 +37,7 @@ function App() {
       <Route element={<ProtectedRoute roles={Object.values(UserRoles)} />}>
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/cost-explorer" element={<CostExplorer />} />
+          <Route path="/cost-explorer" element={<CostExplorerContainer />} />
           <Route path="/aws-services" element={<AwsServices />} />
         </Route>
       </Route>
@@ -47,7 +48,8 @@ function App() {
           <Route path="/user-management" element={<UserManagement />} />
           <Route path="/user-management/add-user" element={<AddNewUser />} />
           <Route path="/user-management/edit-user/:id" element={<EditUser />} />
-          <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/aws-accounts" element={<AwsAccounts />} />
+          <Route path="/aws-accounts/onboarding" element={<Onboarding />} />
         </Route>
       </Route>
 

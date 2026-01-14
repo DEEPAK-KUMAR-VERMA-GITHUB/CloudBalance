@@ -1,4 +1,4 @@
-import { apiFetchAllAwsAccounts } from "../../apis/services/awsAccountService";
+import { apiFetchAllAwsAccounts, apiFetchAssignedAwsAccounts } from "../../apis/services/awsAccountService";
 import {
   AWS_ACCOUNTS_FETCH_FAILURE,
   AWS_ACCOUNTS_FETCH_REQUEST,
@@ -17,3 +17,16 @@ export const fetchAllAccounts = () => async (dispatch) => {
     });
   }
 };
+
+export const fetchAssignedAccounts = () => async (dispatch) => {
+  dispatch({ type: AWS_ACCOUNTS_FETCH_REQUEST });
+  try {
+    const response = await apiFetchAssignedAwsAccounts();
+    dispatch({ type: AWS_ACCOUNTS_FETCH_SUCCESS, payload: response });
+  } catch (error) {
+    dispatch({
+      type: AWS_ACCOUNTS_FETCH_FAILURE,
+      payload: error.message || "Error in fetching aws accounts",
+    });
+  }
+}

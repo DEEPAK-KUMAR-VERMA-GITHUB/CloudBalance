@@ -13,27 +13,47 @@ const menuConfig = {
     {
       name: "User Management",
       href: "/user-management",
-      icon: <PeopleAlt />,
+      icon: <PeopleAlt color="primary" />,
     },
-    { name: "Onboarding", href: "/onboarding", icon: <DashboardCustomize /> },
+    {
+      name: "Aws Accounts",
+      href: "/aws-accounts",
+      icon: <DashboardCustomize color="primary" />,
+    },
     {
       name: "Cost Explorer",
       href: "/cost-explorer",
-      icon: <DataExploration />,
+      icon: <DataExploration color="primary" />,
     },
-    { name: "AWS Services", href: "/aws-services", icon: <FilterDrama /> },
+    {
+      name: "AWS Services",
+      href: "/aws-services",
+      icon: <FilterDrama color="primary" />,
+    },
   ],
-  ReadOnly: [
+  "Read-Only": [
     {
       name: "Cost Explorer",
       href: "/cost-explorer",
-      icon: <DataExploration />,
+      icon: <DataExploration color="primary" />,
     },
-    { name: "AWS Services", href: "/aws-services", icon: <FilterDrama /> },
+    {
+      name: "AWS Services",
+      href: "/aws-services",
+      icon: <FilterDrama color="primary" />,
+    },
   ],
   Customer: [
-    { name: "Cost Explorer", href: "/cost-explorer", icon: "hand-coins" },
-    { name: "AWS Services", href: "/aws-services", icon: "monitor-cloud" },
+    {
+      name: "Cost Explorer",
+      href: "/cost-explorer",
+      icon: <DataExploration color="primary" />,
+    },
+    {
+      name: "AWS Services",
+      href: "/aws-services",
+      icon: <FilterDrama color="primary" />,
+    },
   ],
 };
 const Sidebar = ({ isCollapsed }) => {

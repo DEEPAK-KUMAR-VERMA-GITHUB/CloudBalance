@@ -1,78 +1,52 @@
-import React from "react";
-// Include the react-fusioncharts component
-import ReactFC from "react-fusioncharts";
-
-// Include the fusioncharts library
+import { Card } from "@mui/joy";
 import FusionCharts from "fusioncharts";
+import Charts from "fusioncharts/fusioncharts.charts";
+import ReactFusioncharts from "react-fusioncharts";
+import {
+  buildDailyChartData,
+  buildMonthlyChartData,
+} from "../../utils/transformCostData";
 
-// Include the chart type
-import Column2D from "fusioncharts/fusioncharts.charts";
+Charts(FusionCharts);
 
-// Include the theme as fusion
-import FusionTheme from "fusioncharts/themes/fusioncharts.theme.fusion";
+export default function CostChart({ data, filters, chartType }) {
+  if (!data) return null;
 
-// Adding the chart and theme as dependency to the core fusioncharts
-ReactFC.fcRoot(FusionCharts, Column2D, FusionTheme);
+  const { granularity } = filters;
 
-// Preparing the chart data
-const chartData = [
-  {
-    label: "Venezuela",
-    value: "290",
-  },
-  {
-    label: "Saudi",
-    value: "260",
-  },
-  {
-    label: "Canada",
-    value: "180",
-  },
-  {
-    label: "Iran",
-    value: "140",
-  },
-  {
-    label: "Russia",
-    value: "115",
-  },
-  {
-    label: "UAE",
-    value: "100",
-  },
-  {
-    label: "US",
-    value: "30",
-  },
-  {
-    label: "China",
-    value: "30",
-  },
-];
-
-// Create a JSON object to store the chart configurations
-const chartConfigs = {
-  type: "column2d", // The chart type
-  width: "700", // Width of the chart
-  height: "400", // Height of the chart
-  dataFormat: "json", // Data type
-  dataSource: {
-    // Chart Configuration
+  let dataSource = {
     chart: {
-      caption: "Countries With Most Oil Reserves [2017-18]", //Set the chart caption
-      subCaption: "In MMbbl = One Million barrels", //Set the chart subcaption
-      xAxisName: "Country", //Set the x-axis name
-      yAxisName: "Reserves (MMbbl)", //Set the y-axis name
-      numberSuffix: "K",
-      theme: "fusion", //Set the theme for your chart
+      theme: "fusion",
+      numberPrefix: "$",
+      caption: granularity === "MONTHLY" ? "Monthly Cost" : "Daily Cost",
+      xAxisName: granularity === "MONTHLY" ? "Months" : "Days",
+      yAxisName: "Cost",
     },
-    // Chart Data - from step 2
-    data: chartData,
-  },
-};
+    categories: [],
+    dataset: [],
+  };
 
-const Chart = () => {
-  return <ReactFC {...chartConfigs} />;
-};
+  if (granularity === "MONTHLY") {
+    dataSource = {
+      ...dataSource,
+      ...buildMonthlyChartData(data.monthlyData),
+    };
+  } else {
+    dataSource = {
+      ...dataSource,
+      ...buildDailyChartData(data.dailyData),
+    };
+  }
 
-export default Chart;
+  return (
+    <Card sx={{ p: 0.5 }} variant="outlined">
+      <ReactFusioncharts
+        type={chartType}
+        width="100%"
+        height="400"
+        dataFormat="JSON"
+        dataSource={dataSource}
+      />
+    </Card>
+  );
+}
